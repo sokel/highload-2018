@@ -1,0 +1,166 @@
+version: '3'
+
+networks:
+  legacy:
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 172.16.238.0/24
+
+services:
+  ethstats:
+      build: ./ethstats
+      ports:
+      - "3000:3000"
+      networks:
+        legacy:
+          aliases:
+            - bootnode
+      environment:
+       - WS_SECRET=highload
+  bootnode:
+    build: ./bootnode
+    networks:
+      legacy:
+        aliases:
+          - bootnode
+        ipv4_address: 172.16.238.10
+    ports:
+     - "30301:30301"
+  mining:
+    build: ./node
+    command: >
+      sh -c "/geth --datadir=/data init /genesis.json &&
+             /geth --datadir=/data --networkid=2018 \
+             --ethstats mine_1:highload@ethstats:3000 \
+             --bootnodes=\"enode://494849da925034bde2d29496f046971af62bc2b88b451389433dac48dbf3278a031811071839ed21e7ea0c942fe39e3bba5101b687cf1d92246ca7822132d095@172.16.238.10:30301\" \
+             --mine --etherbase=0x9632372687b3d58b8a347d6e15f85d65664c549d \
+             --password /data/keystore/pass --unlock 0x9632372687b3d58b8a347d6e15f85d65664c549d
+             --targetgaslimit 10000000 --gasprice 0 "
+    depends_on:
+     - ethstats
+     - bootnode
+    volumes:
+      - "${PWD}/genesis.json:/genesis.json"
+      - "${PWD}/keystore/9632372687b3d58b8a347d6e15f85d65664c549d:/data/keystore/9632372687b3d58b8a347d6e15f85d65664c549d"
+      - "${PWD}/keystore/pass:/data/keystore/pass"
+    networks:
+      legacy:
+        aliases:
+         - mining
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  mining_2:
+      build: ./node
+      command: >
+        sh -c "/geth --datadir=/data init /genesis.json &&
+              /geth --datadir=/data --networkid=2018 \
+              --ethstats mine_2:highload@ethstats:3000 \
+              --bootnodes=\"enode://494849da925034bde2d29496f046971af62bc2b88b451389433dac48dbf3278a031811071839ed21e7ea0c942fe39e3bba5101b687cf1d92246ca7822132d095@172.16.238.10:30301\" \
+              --mine \
+              --password /data/keystore/pass --unlock 0x93cfb01fa3394a86d859ae0b72f4a767bf642a16
+              --targetgaslimit 10000000 --gasprice 0 "
+      depends_on:
+      - ethstats
+      - bootnode
+      volumes:
+        - "${PWD}/genesis.json:/genesis.json"
+        - "${PWD}/keystore/93cfb01fa3394a86d859ae0b72f4a767bf642a16:/data/keystore/93cfb01fa3394a86d859ae0b72f4a767bf642a16"
+        - "${PWD}/keystore/pass:/data/keystore/pass"
+      networks:
+        legacy:
+          aliases:
+          - mining_2 
+  mining_3:
+    build: ./node
+    command: >
+      sh -c "/geth --datadir=/data init /genesis.json &&
+             /geth --datadir=/data --networkid=2018 \
+             --ethstats mine_3:highload@ethstats:3000 \
+             --bootnodes=\"enode://494849da925034bde2d29496f046971af62bc2b88b451389433dac48dbf3278a031811071839ed21e7ea0c942fe39e3bba5101b687cf1d92246ca7822132d095@172.16.238.10:30301\" \
+             --mine \
+             --password /data/keystore/pass --unlock 0x04b023a457383b49f52606de23fdec2b3712dc82
+             --targetgaslimit 10000000 --gasprice 0 "
+    depends_on:
+     - ethstats
+     - bootnode
+    volumes:
+      - "${PWD}/genesis.json:/genesis.json"
+      - "${PWD}/keystore/04b023a457383b49f52606de23fdec2b3712dc82:/data/keystore/04b023a457383b49f52606de23fdec2b3712dc82"
+      - "${PWD}/keystore/pass:/data/keystore/pass"
+    networks:
+      legacy:
+        aliases:
+         - mining_3
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  sync:
+    build: ./node
+    command: >
+      sh -c "/geth --datadir=/data init /genesis.json &&
+              /geth --datadir=/data --networkid=2018 \
+              --ethstats sync:highload@ethstats:3000 \
+              --bootnodes=\"enode://494849da925034bde2d29496f046971af62bc2b88b451389433dac48dbf3278a031811071839ed21e7ea0c942fe39e3bba5101b687cf1d92246ca7822132d095@172.16.238.10:30301\" \
+              --rpc --rpcaddr \"0.0.0.0\" --rpcport 8545 --rpcapi \"web3,eth,net,txpool\" --rpccorsdomain \"*\" "
+    depends_on:
+      - ethstats
+      - bootnode
+    volumes:
+      - "${PWD}/genesis.json:/genesis.json"
+    networks:
+      legacy:
+        aliases:
+          - sync
+    ports:
+     - "8545:8545"
