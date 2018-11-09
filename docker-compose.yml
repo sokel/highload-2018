@@ -33,11 +33,11 @@ services:
     command: >
       sh -c "/geth --datadir=/data init /genesis.json &&
              /geth --datadir=/data --networkid=2018 \
+             --targetgaslimit 10000000 --gasprice \"0\" \
              --ethstats mine_1:highload@ethstats:3000 \
              --bootnodes=\"enode://494849da925034bde2d29496f046971af62bc2b88b451389433dac48dbf3278a031811071839ed21e7ea0c942fe39e3bba5101b687cf1d92246ca7822132d095@172.16.238.10:30301\" \
              --mine --etherbase=0x9632372687b3d58b8a347d6e15f85d65664c549d \
-             --password /data/keystore/pass --unlock 0x9632372687b3d58b8a347d6e15f85d65664c549d
-             --targetgaslimit 10000000 --gasprice 0 "
+             --password /data/keystore/pass --unlock 0x9632372687b3d58b8a347d6e15f85d65664c549d "
     depends_on:
      - ethstats
      - bootnode
@@ -49,49 +49,16 @@ services:
       legacy:
         aliases:
          - mining
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   mining_2:
       build: ./node
       command: >
         sh -c "/geth --datadir=/data init /genesis.json &&
               /geth --datadir=/data --networkid=2018 \
+              --targetgaslimit 10000000 --gasprice \"0\" \
               --ethstats mine_2:highload@ethstats:3000 \
               --bootnodes=\"enode://494849da925034bde2d29496f046971af62bc2b88b451389433dac48dbf3278a031811071839ed21e7ea0c942fe39e3bba5101b687cf1d92246ca7822132d095@172.16.238.10:30301\" \
               --mine \
-              --password /data/keystore/pass --unlock 0x93cfb01fa3394a86d859ae0b72f4a767bf642a16
-              --targetgaslimit 10000000 --gasprice 0 "
+              --password /data/keystore/pass --unlock 0x93cfb01fa3394a86d859ae0b72f4a767bf642a16"
       depends_on:
       - ethstats
       - bootnode
@@ -108,11 +75,11 @@ services:
     command: >
       sh -c "/geth --datadir=/data init /genesis.json &&
              /geth --datadir=/data --networkid=2018 \
+             --targetgaslimit 10000000 --gasprice \"0\" \
              --ethstats mine_3:highload@ethstats:3000 \
              --bootnodes=\"enode://494849da925034bde2d29496f046971af62bc2b88b451389433dac48dbf3278a031811071839ed21e7ea0c942fe39e3bba5101b687cf1d92246ca7822132d095@172.16.238.10:30301\" \
              --mine \
-             --password /data/keystore/pass --unlock 0x04b023a457383b49f52606de23fdec2b3712dc82
-             --targetgaslimit 10000000 --gasprice 0 "
+             --password /data/keystore/pass --unlock 0x04b023a457383b49f52606de23fdec2b3712dc82 "
     depends_on:
      - ethstats
      - bootnode
@@ -124,27 +91,6 @@ services:
       legacy:
         aliases:
          - mining_3
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
   sync:
     build: ./node
     command: >
@@ -162,5 +108,6 @@ services:
       legacy:
         aliases:
           - sync
+        ipv4_address: 172.16.238.42
     ports:
      - "8545:8545"
